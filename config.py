@@ -9,5 +9,4 @@ EMAIL_ADDRESS=os.getenv("EMAIL_ADDRESS")
 NEW_PHONE_NUMBER=os.getenv("NEW_PHONE_NUMBER")
 ASSIGNING_INSTITUTION=os.getenv("ASSIGNING_INSTITUTION")
 ORG=os.getenv("ORG")
-BASE_URL=https://chosen-300-volunteer-app-prototype-pbgi.vercel.app/
-
+BASE_URL=os.getenv("BASE_URL")
