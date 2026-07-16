@@ -13,8 +13,8 @@ End-to-end UI test automation for the [Chosen 300 Volunteer App](https://chosen-
 ## Project Structure
 
 ```
-playwright300/
-├── pages/                  # Page Object Model classes
+chosen300-playwright-tests/
+├── pages/                      # Page Object Model classes
 │   ├── base_page.py
 │   ├── lang_page.py
 │   ├── login_page.py
@@ -22,17 +22,24 @@ playwright300/
 │   ├── community_service_page.py
 │   ├── musician_page.py
 │   └── donations.py
-├── tests/                  # Test suites
+├── tests/                      # Test suites
 │   ├── test_language.py
 │   ├── test_login_page.py
 │   ├── test_new_login.py
 │   ├── test_community_service.py
 │   ├── test_musician.py
 │   └── test_donations.py
-├── config.py               # Loads test data from .env
-├── conftest.py             # Shared pytest fixtures
+├── test_data/                  # UI constants and selectable options
+│   ├── volunteer_data.py
+│   ├── community_data.py
+│   ├── musician_data.py
+│   └── donations_data.py
+├── config.py                   # Loads secrets/form data from .env
+├── conftest.py                 # Shared pytest fixtures
+├── pytest.ini                  # Pytest defaults (verbose + screenshots)
 ├── requirements.txt
-└── .env                    # Local test data (not committed)
+├── .env.example                # Template for local env vars
+└── .env                        # Local test data (not committed)
 ```
 
 ## Setup
@@ -40,8 +47,8 @@ playwright300/
 1. **Clone the repository**
 
    ```powershell
-   git clone <your-repo-url>
-   cd playwright300
+   git clone https://github.com/sphilmore/chosen300-playwright-tests.git
+   cd chosen300-playwright-tests
    ```
 
 2. **Create and activate a virtual environment**
@@ -82,22 +89,28 @@ playwright300/
 
 ## Running Tests
 
-Run the full suite:
+`pytest.ini` already sets `-v` and `--screenshot=only-on-failure`, so you can run:
 
 ```powershell
-pytest -v
+pytest
 ```
 
 Run a single test file:
 
 ```powershell
-pytest tests/test_login_page.py -v
+pytest tests/test_login_page.py
 ```
 
 Run a single test:
 
 ```powershell
-pytest tests/test_musician.py::test_musician_sign_up -v
+pytest tests/test_musician.py::test_musician_sign_up
+```
+
+Run headed (see the browser):
+
+```powershell
+pytest --headed
 ```
 
 On failure, Playwright saves a screenshot under `test-results/` (ignored by Git).
@@ -108,14 +121,17 @@ On failure, Playwright saves a screenshot under `test-results/` (ignored by Git)
 |-----------|----------------|
 | `test_language.py` | English and Spanish language selection |
 | `test_login_page.py` | Valid login and invalid phone error |
-| `test_new_login.py` | New volunteer registration and waiver flow |
+| `test_new_login.py` | New volunteer registration, waiver flow, and missing-field validation |
 | `test_community_service.py` | Community service registration end-to-end |
 | `test_musician.py` | Musician sign-up flow |
 | `test_donations.py` | Donations flow through tax deduction notice |
 
 ## Architecture
 
-- **Page Object Model (POM)** — UI interactions live in `pages/`, tests stay focused on behavior and assertions.
-- **Fixtures** — `english_app` fixture opens the app and selects English before each test.
-- **Externalized test data** — Credentials and form data are loaded from `.env` via `config.py`.
-- **Playwright locators** — Uses role-based locators (`get_by_role`, `get_by_text`) for stable selectors.
+- **Page Object Model (POM)** — UI interactions live in `pages/`; tests focus on flow and assertions.
+- **Fixtures** — `english_app` uses pytest-playwright’s `page` fixture, opens the app, and selects English.
+- **Env-driven secrets** — Credentials and personal form data come from `.env` via `config.py`.
+- **Test data constants** — Selectable UI values (instruments, sites, service reasons, donation categories) live in `test_data/`.
+- **Parameterized page methods** — Tests pass scenario data into page methods (for example `select_instrument(DRUMS)`).
+- **Role-based locators** — Uses Playwright locators like `get_by_role` and `get_by_text` for stable selectors.
+- **Failure screenshots** — Configured in `pytest.ini` with `--screenshot=only-on-failure`.
