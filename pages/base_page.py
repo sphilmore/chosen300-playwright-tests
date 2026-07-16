@@ -1,6 +1,7 @@
 from config import BASE_URL
+from playwright.sync_api import Page
 class BasePage:
-    def __init__(self,page):
+    def __init__(self,page:Page):
      self.page = page
     def open(self):
         self.page.goto(BASE_URL)

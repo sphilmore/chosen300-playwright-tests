@@ -1,11 +1,12 @@
 from pages.base_page import BasePage
 
+
 class MusicianUser(BasePage):
     def select_musician(self):
         self.page.get_by_role("button", name="Register as Musician").click()
-    def select_instrument(self):
+    def select_instrument(self, instrument):
      self.page.get_by_role("combobox").filter(has_text="Select your primary instrument").click()
-     self.page.get_by_role("option", name="Drums").click()
+     self.page.get_by_role("option", name=instrument).click()
 
     def click_check_box(self):
         self.page.get_by_role("checkbox", name="I have").click()

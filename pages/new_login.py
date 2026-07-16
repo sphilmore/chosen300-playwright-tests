@@ -1,6 +1,7 @@
 from pages.base_page import BasePage
 
 
+
 class NewVolunteer(BasePage):
     def click_new_volunteer(self):
         self.page.get_by_role("button", name="Register as New Volunteer").click()
@@ -25,14 +26,19 @@ class NewVolunteer(BasePage):
         self.fill_last_name(last_name)
         self.fill_email(email)
         self.fill_new_phone_number(phone_number)
+
     def click_continue(self):
         self.page.get_by_role("button", name="Continue to Site Selection").click()
-    def select_site(self):
-        self.page.get_by_role("radio", name="West Philadelphia").check()
-    def click_to_wavier(self):
+
+    def select_site(self,west_philadelphia):
+        self.page.get_by_role("radio", name=west_philadelphia).check()
+
+    def click_to_waiver(self):
         self.page.get_by_role("button", name="Continue to Waiver").click()
-    def wavier_text(self):
+
+    def waiver_text(self):
         return self.page.get_by_role("heading", name="Volunteer Waiver and Release of Liability")
+
     def alert_text(self):
         return self.page.get_by_role("alert")
     

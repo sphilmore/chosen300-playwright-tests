@@ -77,7 +77,7 @@ playwright300/
    | `LAST_NAME` | Volunteer last name |
    | `EMAIL_ADDRESS` | Volunteer email |
    | `NEW_PHONE_NUMBER` | Phone for registration flows |
-   | `ASSINGING_INSTITUTION` | Institution for community service |
+   | `ASSIGNING_INSTITUTION` | Institution for community service |
    | `ORG` | Organization name for donations |
 
 ## Running Tests
@@ -99,6 +99,8 @@ Run a single test:
 ```powershell
 pytest tests/test_musician.py::test_musician_sign_up -v
 ```
+
+On failure, Playwright saves a screenshot under `test-results/` (ignored by Git).
 
 ## Test Coverage
 
