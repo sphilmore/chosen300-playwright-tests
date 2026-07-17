@@ -1,0 +1,62 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install chromium --with-deps
+
+      - name: Create .env file
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+          INVALID_PHONE_NUMBER: ${{ secrets.INVALID_PHONE_NUMBER }}
+          FIRST_NAME: ${{ secrets.FIRST_NAME }}
+          LAST_NAME: ${{ secrets.LAST_NAME }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          NEW_PHONE_NUMBER: ${{ secrets.NEW_PHONE_NUMBER }}
+          ASSIGNING_INSTITUTION: ${{ secrets.ASSIGNING_INSTITUTION }}
+          ORG: ${{ secrets.ORG }}
+        run: |
+          {
+            echo "BASE_URL=$BASE_URL"
+            echo "PHONE_NUMBER=$PHONE_NUMBER"
+            echo "INVALID_PHONE_NUMBER=$INVALID_PHONE_NUMBER"
+            echo "FIRST_NAME=$FIRST_NAME"
+            echo "LAST_NAME=$LAST_NAME"
+            echo "EMAIL_ADDRESS=$EMAIL_ADDRESS"
+            echo "NEW_PHONE_NUMBER=$NEW_PHONE_NUMBER"
+            echo "ASSIGNING_INSTITUTION=$ASSIGNING_INSTITUTION"
+            echo "ORG=$ORG"
+          } > .env
+
+      - name: Run Playwright tests
+        run: pytest
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          if-no-files-found: ignore
